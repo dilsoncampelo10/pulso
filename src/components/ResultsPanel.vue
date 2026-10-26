@@ -3,8 +3,9 @@ import { computed, onMounted, ref } from 'vue'
 import type { LastRun } from '../composables/useGame'
 import { formatDateKey } from '../dailyChallenge'
 import { buildShareMessage, shareResult, type ShareOutcome } from '../share'
+import AdSlot from './AdSlot.vue'
 
-const props = defineProps<{ run: LastRun; best: number }>()
+const props = defineProps<{ run: LastRun; best: number; showAd: boolean }>()
 const emit = defineEmits<{ restart: []; menu: [] }>()
 
 const againButton = ref<HTMLButtonElement | null>(null)
@@ -41,6 +42,8 @@ async function onShare(): Promise<void> {
 
 <template>
   <section class="screen results" role="dialog" aria-modal="true" aria-labelledby="results-title">
+    <!-- No topo: o placar e as estatísticas ficam entre o anúncio e os botões. -->
+    <AdSlot v-if="showAd" placement="results" />
     <div class="card">
       <h2 id="results-title" class="title">Fim de jogo</h2>
       <p class="mode">
@@ -90,9 +93,17 @@ async function onShare(): Promise<void> {
 <style scoped>
 .results {
   justify-content: center;
+  gap: 12px;
   background: rgba(5, 6, 15, 0.72);
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
+}
+.results:has(.ad) {
+  justify-content: flex-start;
+  padding-top: max(10px, env(safe-area-inset-top));
+}
+.results:has(.ad) .card {
+  margin-block: auto;
 }
 .card {
   width: min(100%, 320px);

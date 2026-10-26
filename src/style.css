@@ -27,9 +27,17 @@
 html,
 body {
   margin: 0;
-  height: 100%;
-  overflow: hidden;
-  overscroll-behavior: none;
+  /* A página rola até o texto "Sobre" abaixo do jogo; a área de jogo em si
+     bloqueia rolagem e zoom (touch-action: none no canvas). */
+  overscroll-behavior-y: none;
+}
+html {
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 body {
@@ -40,15 +48,25 @@ body {
 }
 
 #app {
-  height: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .app {
+  position: relative;
   display: grid;
   place-items: center;
   width: 100%;
   height: 100vh;
   height: 100dvh;
+}
+
+/* Anúncio lateral em telas largas: ADS.safeGap (150px) à direita da área de jogo. */
+.side-ad {
+  position: absolute;
+  top: 50%;
+  left: calc(50% + min(100vw, 100dvh * 9 / 16) / 2 + 150px);
+  transform: translateY(-50%);
 }
 
 /* Área do jogo em retrato: de 9:16 até 9:19.5 (celulares altos), sem distorcer. */
@@ -148,4 +166,58 @@ body {
   .btn {
     transition: none;
   }
+}
+
+.noscript {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--muted);
+}
+
+/* Conteúdo estático (SEO) abaixo da área de jogo. */
+.about {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 40px 16px 64px;
+  line-height: 1.65;
+  color: var(--muted);
+  user-select: text;
+}
+.about h2 {
+  margin: 32px 0 8px;
+  font-size: 20px;
+  color: var(--text);
+}
+.about h2:first-child {
+  margin-top: 0;
+}
+.about h3 {
+  margin: 18px 0 4px;
+  font-size: 16px;
+  color: var(--violet-soft);
+}
+.about p,
+.about ul {
+  margin: 0 0 10px;
+}
+.about li {
+  margin-bottom: 4px;
+}
+.about strong {
+  color: var(--text);
+}
+.about kbd {
+  padding: 0 6px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font: inherit;
+  font-size: 13px;
+  color: var(--text);
+}
+.about a {
+  color: var(--cyan);
+}
+.about-links {
+  margin-top: 32px !important;
+  font-size: 14px;
 }

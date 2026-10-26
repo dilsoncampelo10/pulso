@@ -3,8 +3,10 @@ import type { GameMode } from './game/types'
 
 export type ShareOutcome = 'shared' | 'copied' | 'cancelled' | 'failed'
 
-/** URL pública do jogo (sem query/hash). */
+/** URL pública do jogo: a canônica configurada (VITE_SITE_URL) ou a página atual. */
 export function gameUrl(): string {
+  const configured = (import.meta.env.VITE_SITE_URL ?? '').trim().replace(/\/+$/, '')
+  if (configured) return `${configured}/`
   if (typeof window === 'undefined') return ''
   return `${window.location.origin}${window.location.pathname}`
 }

@@ -3,13 +3,156 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>PULSO — Jogo de reflexo grátis online | Desvie e bata seu recorde</title>
+    <meta
+      name="description"
+      content="PULSO é um jogo arcade de reflexo grátis no navegador. Troque de trilho, desvie dos obstáculos, colete energia e encare o desafio diário. Funciona no celular e no computador, sem instalar nada."
+    />
+    <link rel="canonical" href="__SITE_URL__/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#05060f" />
-    <meta name="description" content="PULSO — troque de trilho, desvie dos obstáculos e bata seu recorde." />
+    <meta name="color-scheme" content="dark" />
+
+    <!-- Ícones e PWA -->
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
-    <title>PULSO</title>
+    <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="PULSO" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <!-- Open Graph / prévias em WhatsApp, Facebook, LinkedIn -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content="PULSO" />
+    <meta property="og:title" content="PULSO — Jogo de reflexo grátis online" />
+    <meta property="og:description" content="Troque de trilho, desvie dos obstáculos e bata seu recorde. Grátis, no navegador, com desafio diário." />
+    <meta property="og:url" content="__SITE_URL__/" />
+    <meta property="og:image" content="__SITE_URL__/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="PULSO: núcleo de energia neon entre dois trilhos desviando de barreiras" />
+
+    <!-- X / Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="PULSO — Jogo de reflexo grátis online" />
+    <meta name="twitter:description" content="Troque de trilho, desvie dos obstáculos e bata seu recorde." />
+    <meta name="twitter:image" content="__SITE_URL__/og-image.jpg" />
+
+    <!-- Dados estruturados (schema.org) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "__SITE_URL__/#website",
+            "url": "__SITE_URL__/",
+            "name": "PULSO",
+            "inLanguage": "pt-BR"
+          },
+          {
+            "@type": ["VideoGame", "WebApplication"],
+            "@id": "__SITE_URL__/#game",
+            "name": "PULSO",
+            "url": "__SITE_URL__/",
+            "description": "Jogo arcade 2D de reflexo para navegador. Troque de trilho para desviar de obstáculos, colete energia e bata o seu recorde. Inclui modo infinito e desafio diário.",
+            "image": "__SITE_URL__/og-image.jpg",
+            "inLanguage": "pt-BR",
+            "genre": ["Arcade", "Casual", "Reflexo"],
+            "gamePlatform": ["Navegador web", "Celular", "Computador"],
+            "applicationCategory": "GameApplication",
+            "operatingSystem": "Qualquer (navegador moderno)",
+            "playMode": "SinglePlayer",
+            "isAccessibleForFree": true,
+            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "BRL" },
+            "isPartOf": { "@id": "__SITE_URL__/#website" }
+          },
+          {
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Como se joga PULSO?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Toque na tela, clique ou pressione espaço para trocar o núcleo de trilho. Desvie das barreiras vermelhas e colete os losangos dourados de energia para ganhar pontos extras."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "O que é o desafio diário?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Todo dia há uma sequência de obstáculos nova, igual para todos os jogadores. Tente fazer a maior pontuação do dia e compartilhe o resultado com os amigos."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Preciso instalar ou criar conta?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Não. PULSO roda direto no navegador do celular ou do computador. Seus recordes ficam salvos apenas neste dispositivo."
+                }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <noscript>
+        <p class="noscript">O PULSO precisa de JavaScript ativado para funcionar.</p>
+      </noscript>
+    </div>
+
+    <!--
+      Conteúdo estático para buscadores e para quem rolar a página.
+      Fica abaixo da área de jogo e não interfere na partida.
+    -->
+    <article class="about" id="sobre">
+      <h2>Sobre o PULSO</h2>
+      <p>
+        <strong>PULSO</strong> é um jogo arcade de reflexo grátis que roda direto no navegador, no celular ou no
+        computador. Você controla um núcleo de energia que corre entre dois trilhos. Os obstáculos vêm cada vez mais
+        rápidos: troque de trilho no momento certo, colete energia e tente bater o seu recorde.
+      </p>
+
+      <h2>Como jogar</h2>
+      <ul>
+        <li><strong>No celular:</strong> toque em qualquer lugar da área de jogo para trocar de trilho.</li>
+        <li><strong>No computador:</strong> pressione <kbd>espaço</kbd> ou clique; as setas <kbd>←</kbd> e <kbd>→</kbd> escolhem o trilho.</li>
+        <li><strong>Desvie</strong> das barreiras vermelhas com setas — encostar em uma termina a partida.</li>
+        <li><strong>Colete</strong> os losangos dourados: cada um vale pontos extras, e coletas seguidas aumentam o multiplicador.</li>
+        <li>A cada 15 segundos a velocidade aumenta um pouco.</li>
+      </ul>
+
+      <h2>Modos de jogo</h2>
+      <h3>Modo infinito</h3>
+      <p>Uma sequência nova a cada partida. Quanto mais você sobrevive, mais pontos faz.</p>
+      <h3>Desafio diário</h3>
+      <p>
+        Todo dia há uma sequência de obstáculos nova, igual para todo mundo. Jogue quantas vezes quiser, guarde o seu
+        melhor resultado do dia e compartilhe com os amigos para ver quem vai mais longe.
+      </p>
+
+      <h2>Perguntas frequentes</h2>
+      <h3>Preciso instalar ou criar conta?</h3>
+      <p>Não. É só abrir a página e jogar. No celular, você pode adicionar o PULSO à tela inicial.</p>
+      <h3>Onde ficam salvos os meus recordes?</h3>
+      <p>
+        No próprio navegador deste dispositivo. Não há ranking global: o recorde é seu, e apagar os dados do site
+        também apaga o recorde.
+      </p>
+      <h3>Funciona sem internet?</h3>
+      <p>Depois que a página carrega, a partida não depende da conexão.</p>
+
+      <p class="about-links"><a href="./privacidade.html">Política de privacidade</a></p>
+    </article>
+
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

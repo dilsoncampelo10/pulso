@@ -2,12 +2,14 @@
 import { onMounted, ref } from 'vue'
 import { formatDateKey } from '../dailyChallenge'
 import type { GameMode } from '../game/types'
+import AdSlot from './AdSlot.vue'
 
 defineProps<{
   best: number
   todayBest: number
   dateKey: string
   soundEnabled: boolean
+  showAd: boolean
 }>()
 const emit = defineEmits<{ start: [mode: GameMode]; toggleSound: [] }>()
 
@@ -15,6 +17,10 @@ const playButton = ref<HTMLButtonElement | null>(null)
 // Foco automático só com mouse/teclado (em toque, o anel de foco só atrapalha).
 onMounted(() => {
   if (window.matchMedia?.('(hover: hover)').matches) playButton.value?.focus({ preventScroll: true })
+  // Baixa o motor do jogo em segundo plano para o "Jogar" ser instantâneo.
+  const prefetch = () => void import('./GameCanvas.vue')
+  if ('requestIdleCallback' in window) window.requestIdleCallback(prefetch, { timeout: 2500 })
+  else setTimeout(prefetch, 800)
 })
 </script>
 
@@ -31,32 +37,42 @@ onMounted(() => {
       <span class="sound-label">{{ soundEnabled ? 'Som' : 'Mudo' }}</span>
     </button>
 
-    <div class="logo" aria-hidden="true">
-      <span class="ring"></span>
-      <span class="core"></span>
+    <!-- Links no topo, longe do anúncio do rodapé (evita cliques acidentais). -->
+    <nav class="menu-links" aria-label="Informações">
+      <a href="#sobre">Como jogar</a>
+      <a href="./privacidade.html">Privacidade</a>
+    </nav>
+
+    <div class="menu-main">
+      <div class="logo" aria-hidden="true">
+        <span class="ring"></span>
+        <span class="core"></span>
+      </div>
+      <h1 id="menu-title" class="title">PULSO</h1>
+
+      <div class="actions">
+        <button ref="playButton" class="btn btn-primary" type="button" @click="emit('start', 'endless')">
+          Jogar
+        </button>
+        <button class="btn btn-secondary" type="button" @click="emit('start', 'daily')">
+          <span>Desafio diário</span>
+          <small>{{ formatDateKey(dateKey) }} · melhor {{ todayBest }}</small>
+        </button>
+      </div>
+
+      <dl class="stats">
+        <dt>Meu recorde</dt>
+        <dd>{{ best }}</dd>
+      </dl>
+
+      <p class="hint">
+        <span class="key">Toque</span> ou pressione <span class="key">espaço</span> para trocar de trilho
+        <br />
+        <span class="sub">← → também funcionam</span>
+      </p>
     </div>
-    <h1 id="menu-title" class="title">PULSO</h1>
 
-    <div class="actions">
-      <button ref="playButton" class="btn btn-primary" type="button" @click="emit('start', 'endless')">
-        Jogar
-      </button>
-      <button class="btn btn-secondary" type="button" @click="emit('start', 'daily')">
-        <span>Desafio diário</span>
-        <small>{{ formatDateKey(dateKey) }} · melhor {{ todayBest }}</small>
-      </button>
-    </div>
-
-    <dl class="stats">
-      <dt>Meu recorde</dt>
-      <dd>{{ best }}</dd>
-    </dl>
-
-    <p class="hint">
-      <span class="key">Toque</span> ou pressione <span class="key">espaço</span> para trocar de trilho
-      <br />
-      <span class="sub">← → também funcionam</span>
-    </p>
+    <AdSlot v-if="showAd" placement="menu" />
 
     <p class="footnote">Recordes salvos apenas neste dispositivo.</p>
   </section>
@@ -64,8 +80,18 @@ onMounted(() => {
 
 <style scoped>
 .menu {
+  gap: 12px;
+  padding-bottom: max(10px, env(safe-area-inset-bottom));
+}
+.menu-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   gap: 18px;
+  width: 100%;
+  min-height: 0;
 }
 .sound-toggle {
   position: absolute;
@@ -167,12 +193,32 @@ onMounted(() => {
   opacity: 0.8;
 }
 .footnote {
-  position: absolute;
-  bottom: max(12px, env(safe-area-inset-bottom));
   margin: 0;
   font-size: 11px;
   color: var(--muted);
-  opacity: 0.75;
+  text-align: center;
+  opacity: 0.8;
+}
+.menu-links {
+  position: absolute;
+  top: max(12px, env(safe-area-inset-top));
+  left: 12px;
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  line-height: 30px;
+}
+.menu-links a {
+  color: var(--muted);
+  text-underline-offset: 3px;
+}
+.menu-links a:hover {
+  color: var(--text);
+}
+.menu-links a:focus-visible {
+  outline: 3px solid var(--cyan);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 @keyframes pulse {
   0%,
