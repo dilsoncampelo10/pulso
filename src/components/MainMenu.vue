@@ -12,7 +12,10 @@ defineProps<{
 const emit = defineEmits<{ start: [mode: GameMode]; toggleSound: [] }>()
 
 const playButton = ref<HTMLButtonElement | null>(null)
-onMounted(() => playButton.value?.focus({ preventScroll: true }))
+// Foco automático só com mouse/teclado (em toque, o anel de foco só atrapalha).
+onMounted(() => {
+  if (window.matchMedia?.('(hover: hover)').matches) playButton.value?.focus({ preventScroll: true })
+})
 </script>
 
 <template>

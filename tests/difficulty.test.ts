@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { DIFFICULTY, OBSTACLE, PLAYER } from '../src/game/config'
+import { DIFFICULTY, OBSTACLE, PLAYER, WORLD, worldHeightFor } from '../src/game/config'
 import { easeSpeed, levelAt, spawnInterval, targetSpeed } from '../src/game/difficulty'
 
 describe('dificuldade', () => {
@@ -34,5 +34,13 @@ describe('dificuldade', () => {
       const reactionSeconds = gapPx / speed
       expect(reactionSeconds).toBeGreaterThan(0.3)
     }
+  })
+
+  it('altura do mundo se adapta à tela dentro dos limites', () => {
+    expect(worldHeightFor(390, 693)).toBe(640)
+    expect(worldHeightFor(390, 844)).toBe(779)
+    expect(worldHeightFor(390, 2000)).toBe(WORLD.maxHeight)
+    expect(worldHeightFor(800, 600)).toBe(WORLD.minHeight)
+    expect(worldHeightFor(0, 0)).toBe(WORLD.minHeight)
   })
 })

@@ -4,11 +4,23 @@
  * Nenhum outro arquivo deve ter números "mágicos" de gameplay.
  */
 
-/** Resolução lógica do mundo (retrato). O Phaser escala sem distorcer (Scale.FIT). */
+/**
+ * Resolução lógica do mundo (retrato). A largura é fixa; a altura se adapta à
+ * proporção da tela entre 9:16 e 9:19.5 para ocupar celulares altos sem faixas
+ * vazias. O Phaser escala sem distorcer (Scale.FIT).
+ */
 export const WORLD = {
   width: 360,
-  height: 640,
+  minHeight: 640,
+  maxHeight: 780,
 } as const
+
+/** Altura lógica do mundo para um contêiner de w × h pixels. */
+export function worldHeightFor(containerWidth: number, containerHeight: number): number {
+  if (containerWidth <= 0 || containerHeight <= 0) return WORLD.minHeight
+  const h = Math.round((WORLD.width * containerHeight) / containerWidth)
+  return Math.min(Math.max(h, WORLD.minHeight), WORLD.maxHeight)
+}
 
 export const LANES = {
   /** Centro X de cada trilho: [esquerdo, direito]. */
@@ -18,7 +30,8 @@ export const LANES = {
 } as const
 
 export const PLAYER = {
-  y: 520,
+  /** Distância do jogador até a borda inferior do mundo. */
+  bottomOffset: 120,
   radius: 18,
   /** Duração do deslize visual entre trilhos (ms). A troca lógica é instantânea. */
   switchTweenMs: 70,

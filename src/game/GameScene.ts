@@ -24,8 +24,8 @@ const TEX = {
   grid: 'pulso-grid',
 } as const
 
-/** Quanto do objeto pode passar do fundo da tela antes de ser reciclado. */
-const DESPAWN_Y = WORLD.height + 60
+/** Quanto um objeto pode passar do fundo da tela antes de ser reciclado. */
+const DESPAWN_MARGIN = 60
 
 /**
  * Cena única da partida. É reiniciada com `scene.restart(config)` a cada nova
@@ -50,6 +50,11 @@ export class GameScene extends Phaser.Scene {
   private lastEmittedScore = -1
   private lastEmittedMultiplier = -1
   private lastPointerAt = Number.NEGATIVE_INFINITY
+
+  // Geometria (depende da altura do mundo, definida na criação do jogo)
+  private worldHeight: number = WORLD.minHeight
+  private playerY: number = WORLD.minHeight - PLAYER.bottomOffset
+  private despawnY: number = WORLD.minHeight + DESPAWN_MARGIN
 
   // Objetos (reutilizados via pools)
   private player!: Phaser.GameObjects.Image
@@ -85,17 +90,21 @@ export class GameScene extends Phaser.Scene {
   }
 
   create(): void {
+    this.worldHeight = this.scale.height
+    this.playerY = this.worldHeight - PLAYER.bottomOffset
+    this.despawnY = this.worldHeight + DESPAWN_MARGIN
+
     this.createTextures()
     this.cameras.main.setBackgroundColor(COLORS.background)
 
-    this.grid = this.add.tileSprite(0, 0, WORLD.width, WORLD.height, TEX.grid).setOrigin(0)
+    this.grid = this.add.tileSprite(0, 0, WORLD.width, this.worldHeight, TEX.grid).setOrigin(0)
     this.drawLanes()
 
     this.obstacles = this.add.group({ classType: Phaser.GameObjects.Image, maxSize: 16 })
     this.energies = this.add.group({ classType: Phaser.GameObjects.Image, maxSize: 12 })
     this.popups = this.add.group({ classType: Phaser.GameObjects.Text, maxSize: 6 })
 
-    this.player = this.add.image(LANES.x[this.lane], PLAYER.y, TEX.player).setDepth(10)
+    this.player = this.add.image(LANES.x[this.lane], this.playerY, TEX.player).setDepth(10)
     if (!this.run.reducedMotion) {
       this.tweens.add({
         targets: this.player,
@@ -132,6 +141,9 @@ export class GameScene extends Phaser.Scene {
     this.input.keyboard?.on('keydown', this.handleKey, this)
 
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.cleanup, this)
+
+    // Apenas em `npm run dev`: expõe a cena para depuração/testes automáticos.
+    if (import.meta.env.DEV) (window as unknown as { __pulso?: GameScene }).__pulso = this
 
     sfx.play('start')
     this.emitScore()
@@ -233,11 +245,11 @@ export class GameScene extends Phaser.Scene {
       const o = child as Phaser.GameObjects.Image
       if (!o.active) continue
       o.y += scroll
-      if (o.y > DESPAWN_Y) {
+      if (o.y > this.despawnY) {
         this.obstacles.killAndHide(o)
         continue
       }
-      if (laneOf(o.x) === this.lane && Math.abs(o.y - PLAYER.y) < hitY) {
+      if (laneOf(o.x) === this.lane && Math.abs(o.y - this.playerY) < hitY) {
         this.crash()
         return
       }
@@ -251,11 +263,11 @@ export class GameScene extends Phaser.Scene {
       if (!e.active) continue
       e.y += scroll
       e.angle += spin
-      if (e.y > DESPAWN_Y) {
+      if (e.y > this.despawnY) {
         this.energies.killAndHide(e)
         continue
       }
-      const dy = e.y - PLAYER.y
+      const dy = e.y - this.playerY
       if (laneOf(e.x) === this.lane && Math.abs(dy) < ENERGY.pickupRadius) {
         this.collect(e)
       } else if (dy > ENERGY.pickupRadius && !e.getData('missed')) {
@@ -341,14 +353,14 @@ export class GameScene extends Phaser.Scene {
     const half = LANES.width / 2
     for (const x of LANES.x) {
       g.fillStyle(COLORS.laneFill, 0.85)
-      g.fillRect(x - half, 0, LANES.width, WORLD.height)
+      g.fillRect(x - half, 0, LANES.width, this.worldHeight)
       g.lineStyle(2, COLORS.lane, 0.55)
-      g.lineBetween(x - half, 0, x - half, WORLD.height)
-      g.lineBetween(x + half, 0, x + half, WORLD.height)
+      g.lineBetween(x - half, 0, x - half, this.worldHeight)
+      g.lineBetween(x + half, 0, x + half, this.worldHeight)
     }
     // Linha do jogador: referência discreta de onde as colisões acontecem.
     g.lineStyle(1, COLORS.lane, 0.35)
-    g.lineBetween(LANES.x[0] - half, PLAYER.y, LANES.x[1] + half, PLAYER.y)
+    g.lineBetween(LANES.x[0] - half, this.playerY, LANES.x[1] + half, this.playerY)
   }
 
   /** Gera as texturas com formas geométricas — nenhum asset externo necessário. */

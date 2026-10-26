@@ -11,7 +11,10 @@ const againButton = ref<HTMLButtonElement | null>(null)
 const shareStatus = ref<ShareOutcome | null>(null)
 const sharing = ref(false)
 
-onMounted(() => againButton.value?.focus({ preventScroll: true }))
+// Foco automático só com mouse/teclado (em toque, o anel de foco só atrapalha).
+onMounted(() => {
+  if (window.matchMedia?.('(hover: hover)').matches) againButton.value?.focus({ preventScroll: true })
+})
 
 const isDaily = computed(() => props.run.result.mode === 'daily')
 const shareLabel = computed(() => {

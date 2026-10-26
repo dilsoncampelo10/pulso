@@ -6,7 +6,7 @@
  */
 import Phaser from 'phaser'
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { COLORS, WORLD } from '../game/config'
+import { COLORS, WORLD, worldHeightFor } from '../game/config'
 import { GameScene } from '../game/GameScene'
 import type { RunConfig, RunResult, ScoreUpdate } from '../game/types'
 
@@ -27,7 +27,7 @@ onMounted(() => {
     type: Phaser.AUTO,
     parent: host.value,
     width: WORLD.width,
-    height: WORLD.height,
+    height: worldHeightFor(host.value.clientWidth, host.value.clientHeight),
     backgroundColor: COLORS.background,
     banner: false,
     audio: { noAudio: true }, // sons são sintetizados em game/sound.ts

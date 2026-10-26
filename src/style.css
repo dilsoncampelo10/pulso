@@ -51,11 +51,11 @@ body {
   height: 100dvh;
 }
 
-/* Área do jogo em retrato (9:16), o maior possível sem distorcer. */
+/* Área do jogo em retrato: de 9:16 até 9:19.5 (celulares altos), sem distorcer. */
 .stage {
   position: relative;
   width: min(100vw, calc(100dvh * 9 / 16));
-  height: min(100dvh, calc(100vw * 16 / 9));
+  height: min(100dvh, calc(100vw * 19.5 / 9));
   overflow: hidden;
   background: var(--bg);
   touch-action: manipulation; /* evita zoom por toque duplo nos botões */
